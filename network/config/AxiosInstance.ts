@@ -1,10 +1,7 @@
 import axios from "axios";
-// import { refreshToken } from "src/network/requests";
 import APIConstants from "./APIConstants";
 
-async function getAxiosInstance() {
-  const getTokenLocal = localStorage.getItem("token");
-
+async function getAxiosInstance(token?: string) {
   const instance = axios.create({
     baseURL: APIConstants.BASE_URL,
     timeout: 30000,
@@ -16,8 +13,8 @@ async function getAxiosInstance() {
 
   instance.interceptors.request.use(
     async (config) => {
-      if (getTokenLocal) {
-        config.headers.Authorization = "Bearer " + getTokenLocal;
+      if (token) {
+        config.headers.Authorization = "Bearer " + token;
       }
 
       return config;

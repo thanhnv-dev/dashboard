@@ -1,11 +1,26 @@
 "use client";
 import { useSession } from "next-auth/react";
 import { signOut } from "next-auth/react";
+import { sendGet } from "@/network/requests";
+import React, { useState, useEffect } from "react";
 
 export default function Dashboard() {
   const { data: session, status } = useSession();
 
-  console.log("session", session);
+  const [data, setData] = useState<any>([]);
+
+  console.log("data", data.data);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response: any = await sendGet(
+        "api/admin/user/data",
+        session?.user.token
+      );
+      setData(response);
+    };
+    fetchData();
+  }, []);
 
   return (
     <main>

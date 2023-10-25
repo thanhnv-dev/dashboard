@@ -1,5 +1,6 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { sendGet, sendPost } from "@/network/requests";
 
 const handler = NextAuth({
   providers: [
@@ -9,11 +10,14 @@ const handler = NextAuth({
         password: {},
       },
       async authorize(credentials, req) {
-        console.log("credentials", credentials);
-        return {
-          id: "12",
-          email: "test",
-        };
+        const loginResult: any = await sendPost(
+          "api/admin/login",
+          credentials as Object
+        );
+        if (loginResult?.data?.status === 200) {
+          return loginResult.data;
+        }
+        return null;
       },
     }),
   ],
@@ -23,6 +27,15 @@ const handler = NextAuth({
   secret: process.env.NEXTAUTH_SECRET,
   pages: {
     signIn: "/",
+  },
+  callbacks: {
+    async jwt({ token, user }) {
+      return { ...token, ...user };
+    },
+    async session({ session, token, user }) {
+      session.user = token as any;
+      return session;
+    },
   },
 });
 

@@ -1,4 +1,4 @@
 const APIConstants = {
-  BASE_URL: `https://server-jobs-pot.vercel.app/`,
+  BASE_URL: `http://localhost:3000/`,
 };
 export default APIConstants;
